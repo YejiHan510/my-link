@@ -81,7 +81,7 @@ export default function Page() {
           </div>
 
           <h1 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-100 to-pink-200 tracking-tight drop-shadow-sm">
-            @nickname
+            Han Yeji
           </h1>
           <p className="text-slate-300 mt-3 font-medium text-sm sm:text-base leading-relaxed px-4">
             크리에이터를 위한 특별한 멀티 링크 프로필 공간입니다. 나를 돋보이게 하는 한 줄 소개를 적어보세요.
