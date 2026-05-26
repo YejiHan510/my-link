@@ -20,14 +20,23 @@ export default function Page() {
   const [isOpen, setIsOpen] = useState(false);
   const [newTitle, setNewTitle] = useState("");
   const [newUrl, setNewUrl] = useState("");
+  const [urlError, setUrlError] = useState("");
 
   const handleAddLink = (e: React.FormEvent) => {
     e.preventDefault();
+    setUrlError("");
     if (!newTitle.trim() || !newUrl.trim()) return;
 
     let finalUrl = newUrl.trim();
     if (!finalUrl.startsWith("http://") && !finalUrl.startsWith("https://")) {
       finalUrl = `https://${finalUrl}`;
+    }
+
+    try {
+      new URL(finalUrl);
+    } catch (_) {
+      setUrlError("유효한 URL 형식이 아닙니다.");
+      return;
     }
 
     const newLink = {
@@ -40,6 +49,7 @@ export default function Page() {
     setLinkList((prev) => [newLink, ...prev]);
     setNewTitle("");
     setNewUrl("");
+    setUrlError("");
     setIsOpen(false);
   };
 
@@ -80,7 +90,14 @@ export default function Page() {
 
         {/* Action / Add Link Section */}
         <div className="flex justify-center">
-          <Dialog open={isOpen} onOpenChange={setIsOpen}>
+          <Dialog open={isOpen} onOpenChange={(open) => {
+            setIsOpen(open);
+            if (!open) {
+              setNewTitle("");
+              setNewUrl("");
+              setUrlError("");
+            }
+          }}>
             <DialogTrigger render={<Button className="rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 backdrop-blur-md shadow-lg transition-all duration-300" />}>
               <Plus className="w-4 h-4 mr-2" />
               링크 추가
@@ -107,11 +124,17 @@ export default function Page() {
                     id="url"
                     placeholder="https://youtube.com/..."
                     value={newUrl}
-                    onChange={(e) => setNewUrl(e.target.value)}
-                    className="bg-slate-950 border-slate-800 text-white placeholder:text-slate-500"
+                    onChange={(e) => {
+                      setNewUrl(e.target.value);
+                      if (urlError) setUrlError("");
+                    }}
+                    className={`bg-slate-950 text-white placeholder:text-slate-500 ${
+                      urlError ? "border-red-500 focus-visible:ring-red-500" : "border-slate-800"
+                    }`}
                     autoComplete="off"
                     type="url"
                   />
+                  {urlError && <p className="text-red-400 text-sm mt-1">{urlError}</p>}
                 </div>
                 <div className="pt-2 flex justify-end gap-3">
                   <Button 
